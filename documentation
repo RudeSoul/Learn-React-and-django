@@ -158,4 +158,86 @@ Step2:	django-admin startproject projectname i.e in our case project name is lea
 
 
 
-			
+Step3:  Creating the React Frontend
+
+
+	3.1:	 In this section, we're going to create the front-end application of our project using React.
+
+			React has an official utility that allows you to quickly generate React projects without having to configure Webpack directly. Webpack is a module bundler used to bundle web assets such as JavaScript code, CSS, and images. Typically, before you can use Webpack you need to set various configuration options, but thanks to the create-react-app utility you don't have to deal with Webpack directly until you decide you need more control. To run create-react-app you can use npx, a tool that executes npm package binaries.
+
+	3.2:	In your second terminal, make sure you are in your project directory:
+
+			3.2.1: cd ~/learnreact
+				   Create a React project called frontend using create-react-app and npx:
+
+			3.2.2: npx create-react-app frontend
+				   Next, navigate inside your React application and start the development server:
+
+			3.2.3: cd ~/learnreact/frontend
+			3.2.4: npm start
+
+				   You application will be running from http://localhost:3000/:
+
+		
+
+			Leave the React development server running and open another terminal window to proceed.
+
+			To see the directory structure of the entire project at this point, navigate to the root folder and run tree again:
+
+			3.2.5: cd ~/learnreact
+			3.2.6: tree
+
+					You'll see a structure like this:
+
+						Output
+						├── welearner
+						│   ├── admin.py
+						│   ├── apps.py
+						│   ├── __init__.py
+						│   ├── migrations
+						│   │   └── __init__.py
+						│   ├── models.py
+						│   ├── tests.py
+						│   └── views.py
+						├── learnreact
+						│   ├── __init__.py
+						│   ├── __pycache__
+						│   ├── settings.py
+						│   ├── urls.py
+						│   └── wsgi.py
+						├── frontend
+						│   ├── package.json
+						│   ├── public
+						│   │   ├── favicon.ico
+						│   │   ├── index.html
+						│   │   └── manifest.json
+						│   ├── README.md
+						│   ├── src
+						│   │   ├── App.css
+						│   │   ├── App.js
+						│   │   ├── App.test.js
+						│   │   ├── index.css
+						│   │   ├── index.js
+						│   │   ├── logo.svg
+						│   │   └── registerServiceWorker.js
+						│   └── yarn.lock
+						└── manage.py
+
+
+					Our application will use Bootstrap 4 to style the React interface, so we will include it in the frontend/src/App.css file, which manages our CSS settings. Open the file:
+
+			3.2.7: ~/learnreact/frontend/src/App.css
+
+				   Add the following import to the beginning of the file. You can delete the file's existing content, though that's not required:
+
+			3.2.8: ~/learnreact/frontend/src/App.css
+
+			3.2.9: @import  'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css';
+
+					Here, @import is a CSS instruction that's used to import style rules from other style sheets.
+
+					Now that we have created both the back-end and front-end applications, let's create the Customer model and some demo data.
+
+
+
+					
