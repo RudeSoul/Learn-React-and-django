@@ -125,11 +125,15 @@ Step2:	django-admin startproject projectname i.e in our case project name is lea
 
 			2.8.1 : Migrate the database:
 
+
 					2.8.1.1 : python manage.py makemigrations
 					2.8.1.2 : python manage.py migrate
 
+
 			2.8.2 : Start the local development server:
 				    2.8.2.1 : python manage.py runserver
+
+
 					
 					You will see output similar to the following:
 
@@ -149,7 +153,7 @@ Step2:	django-admin startproject projectname i.e in our case project name is lea
 					********************************************************************************************
 
 
-At this point, leave the application running and open a new terminal to continue developing the project.
+					At this point, leave the application running and open a new terminal to continue developing the project.
 
 
 
