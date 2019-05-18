@@ -57,10 +57,10 @@ Step2:	django-admin startproject projectname i.e in our case project name is lea
 
     	2.4 : Our first step in working with the project will be to configure the packages we installed in the 		  previous step, including the Django REST framework and the Django CORS package, by adding them to 	  settings.py. Open the file with Visual Code Studio or your favorite editor:
 
-			2.4.1 : Visual Code Studio: ~/djangoreactproject/djangoreactproject/settings.py
+			2.4.1 : Visual Code Studio: ~/learnreact/learnreact/settings.py
 					Navigate to the INSTALLED_APPS setting and add the rest_framework and corsheaders applications to the bottom of the list:
 
-			2.4.2 : ~/djangoreactproject/djangoreactproject/settings.py
+			2.4.2 : ~/learnreact/learnreact/settings.py
 					...
 
 					INSTALLED_APPS = [
@@ -75,7 +75,7 @@ Step2:	django-admin startproject projectname i.e in our case project name is lea
 									]
 		2.5 : Next, add the corsheaders.middleware.CorsMiddleware middleware from the previously installed CORS 	   package to the MIDDLEWARE setting. This setting is a list of middlewares, a Python class that 		   contains code processed each time your web application handles a request or response:
 
-			2.5.1 : ~/djangoreactproject/djangoreactproject/settings.py
+			2.5.1 : ~/learnreact/learnreact/settings.py
 					...
 
 					MIDDLEWARE = [
@@ -86,7 +86,7 @@ Step2:	django-admin startproject projectname i.e in our case project name is lea
 								  ]
 		2.6: Next, you can enable CORS. The CORS_ORIGIN_ALLOW_ALL setting specifies whether or not you want to 		 allow CORS for all domains, and CORS_ORIGIN_WHITELIST is a Python tuple that contains allowed URLs. 	  In our case, because the React development server will be running at http://localhost:3000, we will 	   add new CORS_ORIGIN_ALLOW_ALL = False and CORS_ORIGIN_WHITELIST('localhost:3000',) settings to our 		 settings.py file. Add these settings anywhere in the file:
 
-			2.6.1 : ~/djangoreactproject/djangoreactproject/settings.py
+			2.6.1 : ~/learnreact/learnreact/settings.py
 					...
 					CORS_ORIGIN_ALLOW_ALL = False
 
@@ -99,25 +99,25 @@ Step2:	django-admin startproject projectname i.e in our case project name is lea
 
 			2.6.2 : Save the file and exit the editor when you are finished.
 
-    2.7 : Still in the ~/djangoreactproject directory, make a new Django application called customers:
+    2.7 : Still in the ~/learnreact directory, make a new Django application called "welearner":
 
-			2.7.1 : python manage.py startapp customers
+			2.7.1 : python manage.py startapp welearner
 
-					This will contain the models and views for managing customers. Models define the fields and behaviors of our application data, while views enable our application to properly handle web requests and return the required responses.
+					This will contain the models and views for managing welearner. Models define the fields and behaviors of our application data, while views enable our application to properly handle web requests and return the required responses.
 
 					Next, add this application to the list of installed applications in your project's settings.py file so Django will recognize it as part of the project. Open settings.py again:
 
-					 ~/djangoreactproject/djangoreactproject/settings.py
+					 ~/learnreact/learnreact/settings.py
 
-					Add the customers application:
+					Add the welearner application:
 
-						~/djangoreactproject/djangoreactproject/settings.py
+						~/learnreact/learnreact/settings.py
 						...
 					INSTALLED_APPS = [
 				    ...
 				    'rest_framework',
 				    'corsheaders',
-				    'customers'
+				    'welearner'
 									]
 
 
@@ -140,7 +140,7 @@ Step2:	django-admin startproject projectname i.e in our case project name is lea
 					*                                                                                          *
 					*	System check identified no issues (0 silenced).                                        *
 					*	October 22, 2018 - 15:14:50                                                            * 
-					*	Django version 2.1.2, using settings 'djangoreactproject.settings'                     *
+					*	Django version 2.1.2, using settings 'learnreact.settings'                     *
 					*	Starting development server at http://127.0.0.1:8000/                                  *
 					*	Quit the server with CONTROL-C.														   *
 					*	Your web application will be running from http://127.0.0.1:8000. If you navigate to    *
