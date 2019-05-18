@@ -90,12 +90,13 @@ Step2:	django-admin startproject projectname i.e in our case project name is lea
 					...
 					CORS_ORIGIN_ALLOW_ALL = False
 
-					CORS_ORIGIN_WHITELIST = (
-     			   'localhost:3000',
-					)
+					CORS_ORIGIN_WHITELIST = [
+                     'http://localhost:3000',
+                     'http://127.0.0.1:3000',
+                        ]
 					...
 
-					You can find more configuration options in the django-cors-headers docs.
+					You can find more configuration options in the django-cors-headers docs " https://github.com/ottoyiu/django-cors-headers/#configuration ".
 
 			2.6.2 : Save the file and exit the editor when you are finished.
 
@@ -111,7 +112,7 @@ Step2:	django-admin startproject projectname i.e in our case project name is lea
 
 					Add the welearner application:
 
-						~/learnreact/learnreact/settings.py
+					~/learnreact/learnreact/settings.py
 						...
 					INSTALLED_APPS = [
 				    ...

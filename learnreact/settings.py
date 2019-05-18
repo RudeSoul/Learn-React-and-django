@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'corsheaders'
+    'corsheaders',
+    'welearner'
 ]
 
 MIDDLEWARE = [
@@ -72,6 +73,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'learnreact.wsgi.application'
+
+#For Changing the port from django to react, as django run on port :8000 and react run on port :3000
+CORS_ORIGIN_ALLOW_ALL = False
+
+CORS_ORIGIN_WHITELIST = [
+                     'http://localhost:3000',
+                     'http://127.0.0.1:3000',
+                        ]
 
 
 # Database
