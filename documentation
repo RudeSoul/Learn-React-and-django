@@ -329,14 +329,14 @@ Step 4 — 	Creating the Welearner Model and Initial Data
 						Output
 						Migrations for 'welearner':
 						  welearner/migrations/0002_welearner.py
-						Note that the name of your migration file is 0002_customers.py.
+						Note that the name of your migration file is 0002_welearner.py.
 
 	4.5:	Next, navigate inside the migrations folder of the welearner application:
 
 			4.5.1:	cd ~/learnreact/welearner/migrations
 			4.5.2:	Open the created migration file:
 
-			4.5.3:	0002_customers.py
+			4.5.3:	0002_welearner.py
 					This is the initial content of the file:
 
 			4.5.4:	~/learnreact/welearner/migrations/0002_welearner.py
@@ -359,7 +359,7 @@ Step 4 — 	Creating the Welearner Model and Initial Data
 
 			Next, add a method to create demo learner data. Add the following method before the definition of the Migration class:
 
-			4.6.1:	~/learnreact/welearner/migrations/0002_customers.py
+			4.6.1:	~/learnreact/welearner/migrations/0002_welearner.py
 					...
 			4.6.2:	def create_data(apps, schema_editor):
 			    		Welearner = apps.get_model('welearner', 'Welearner')
@@ -372,7 +372,7 @@ Step 4 — 	Creating the Welearner Model and Initial Data
 
 			The apps object will be passed from the RunPython() method when we use it to run create_data(). Add the migrations.RunPython() method to the empty operations list:
 
-			4.6.3:	~/learnreact/welearner/migrations/0002_customers.py
+			4.6.3:	~/learnreact/welearner/migrations/0002_welearner.py
 
 					...
 			    	operations = [
@@ -382,12 +382,12 @@ Step 4 — 	Creating the Welearner Model and Initial Data
 
 	4.7:This is the complete file:
 
-			4.7.1:	~/learnreact/welearner/migrations/0002_customers.py
+			4.7.1:	~/learnreact/welearner/migrations/0002_welearner.py
 				from django.db import migrations
 
 				def create_data(apps, schema_editor):
 			    		Welearner = apps.get_model('welearner', 'Welearner')
-			    		Welearner(first_name="Welearner 001", last_name="Welearner 001", email="customer001@email.com", phone="00000000", address="Welearner 000 Address", description= "Welearner 001 description").save()
+			    		Welearner(first_name="Welearner 001", last_name="Welearner 001", email="Welearner001@email.com", phone="00000000", address="Welearner 000 Address", description= "Welearner 001 description").save()
 
 				class Migration(migrations.Migration):
 			    		dependencies = [
@@ -412,12 +412,290 @@ Step 4 — 	Creating the Welearner Model and Initial Data
 						Operations to perform:
 						  Apply all migrations: admin, auth, contenttypes, welearner, sessions
 						Running migrations:
-						  Applying welearner.0002_customers... OK
+						  Applying welearner.0002_welearner... OK
 
 
 			For more details on this process, refer back to How To Create Django Models.
 
 			With the Welearner model and demo data created, we can move on to building the REST API.
+
+
+
+Step 5 — Creating the REST API
+
+			In this step we'll create the REST API using the Django REST Framework. We'll create several different API views. An API view is a function that handles an API request or call, while an API endpoint is a unique URL that represents a touchpoint with the REST system. For example, when the user sends a GET request to an API endpoint, Django calls the corresponding function or API view to handle the request and return any possible results.
+
+			We'll also make use of serializers. A serializer in the Django REST Framework allows complex model instances and QuerySets to be converted into JSON format for API consumption. The serializer class can also work in the other direction, providing mechanisms for parsing and deserializing data into Django models and QuerySets.
+
+		Our API endpoints will include:
+
+			api/welearner: This endpoint is used to create welearner and returns paginated sets of welearner.
+			api/welearner/<pk>: This endpoint is used to get, update, and delete single welearner by primary key or id.
+			We'll also create URLs in the project's urls.py file for the corresponding endpoints (i.e api/welearner and api/welearner/<pk>).
+
+		Let's start by creating the serializer class for our Welearner model.
+
+			Adding the Serializer Class
+
+			Creating a serializer class for our Welearner model is necessary for transforming Welearner instances and QuerySets to and from JSON. To create the serializer class, first make a serializers.py file inside the welearner application:
+
+			cd ~/learnreact/welearner/
+	 		serializers.py
+
+		Add the following code to import the serializers API and Welearner model:
+
+			~/learnreact/welearner/serializers.py
+
+				from rest_framework import serializers
+				from .models import Welearner
+
+			Next, create a serializer class that extends serializers.ModelSerializer and specifies the fields that will be serialized:
+
+			~/learnreact/welearner/serializers.py
+
+				...
+			class welearnererializer(serializers.ModelSerializer):
+
+    			class Meta:
+        			model = Welearner 
+        			fields = ('pk','first_name', 'last_name', 'email', 'phone','address','description')
+
+			The Meta class specifies the model and fields to serialize: pk,first_name, last_name, email, phone, address,description.
+
+			*****This is the full content of the file:*****
+
+					~/learnreact/welearner/serializers.py
+
+
+						from rest_framework import serializers
+						from .models import Welearner
+
+						class welearnererializer(serializers.ModelSerializer):
+
+						    class Meta:
+						        model = Welearner 
+						        fields = ('pk','first_name', 'last_name', 'email', 'phone','address','description')
+
+
+			Now that we've created our serializer class, we can add the API views.
+
+			Adding the API Views
+
+				In this section, we'll create the API views for our application that will be called by Django when the user visits the endpoint corresponding to the view function.
+
+			Open ~/learnreact/welearner/views.py:
+
+				 ~/learnreact/welearner/views.py
+
+			Delete what's there and add the following imports:
+
+				~/learnreact/welearner/views.py
+
+
+					from rest_framework.response import Response
+					from rest_framework.decorators import api_view
+					from rest_framework import status
+
+					from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+					from .models import Welearner 
+					from .serializers import *
+
+
+		We are importing the serializer we created, along with the Welearner model and the Django and Django REST Framework APIs.
+
+			Next, add the view for processing POST and GET HTTP requests:
+
+				~/learnreact/welearner/views.py
+					...
+
+						@api_view(['GET', 'POST'])
+						def welearner_list(request):
+						    """
+						 List  welearner, or create a new Welearner.
+						 """
+						    if request.method == 'GET':
+						        data = []
+						        nextPage = 1
+						        previousPage = 1
+						        welearner = Welearner.objects.all()
+						        page = request.GET.get('page', 1)
+						        paginator = Paginator(welearner, 10)
+						        try:
+						            data = paginator.page(page)
+						        except PageNotAnInteger:
+						            data = paginator.page(1)
+						        except EmptyPage:
+						            data = paginator.page(paginator.num_pages)
+
+						        serializer = welearnererializer(data,context={'request': request} ,many=True)
+						        if data.has_next():
+						            nextPage = data.next_page_number()
+						        if data.has_previous():
+						            previousPage = data.previous_page_number()
+
+						        return Response({'data': serializer.data , 'count': paginator.count, 'numpages' : paginator.num_pages, 'nextlink': '/api/welearner/?page=' + str(nextPage), 'prevlink': '/api/welearner/?page=' + str(previousPage)})
+
+						    elif request.method == 'POST':
+						        serializer = welearnererializer(data=request.data)
+						        if serializer.is_valid():
+						            serializer.save()
+						            return Response(serializer.data, status=status.HTTP_201_CREATED)
+						        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+				First we use the @api_view(['GET', 'POST']) decorator to create an API view that can accept GET and POST requests. A decorator is a function that takes another function and dynamically extends it.
+
+				In the method body we use the request.method variable to check the current HTTP method and execute the corresponding logic depending on the request type:
+
+				If it's a GET request, the method paginates the data using Django Paginator, and returns the first page of data after serialization, the count of available welearner, the number of available pages, and the links to the previous and next pages. Paginator is a built-in Django class that paginates a list of data into pages and provides methods to access the items for each page.
+
+				If it's a POST request, the method serializes the received Welearner data and then calls the save() method of the serializer object. It then returns a Response object, an instance of HttpResponse, with a 201 status code. Each view you create is responsible for returing an HttpResponse object. The save() method saves the serialized data in the database.
+
+				For more about HttpResponse and views, see this discussion of creating view functions.
+
+		Now add the API view that will be responsible for processing the GET, PUT, and DELETE requests for getting, updating, and deleting welearner by pk (primary key):
+
+				~/learnreact/welearner/views.py
+
+					...
+					@api_view(['GET', 'PUT', 'DELETE'])
+					def welearner_detail(request, pk):
+					 """
+					 Retrieve, update or delete a Welearner by id/pk.
+					 """
+					    try:
+					        Welearner = Welearner.objects.get(pk=pk)
+					    except Welearner.DoesNotExist:
+					        return Response(status=status.HTTP_404_NOT_FOUND)
+
+					    if request.method == 'GET':
+					        serializer = welearnererializer(Welearner,context={'request': request})
+					        return Response(serializer.data)
+
+					    elif request.method == 'PUT':
+					        serializer = welearnererializer(Welearner, data=request.data,context={'request': request})
+					        if serializer.is_valid():
+					            serializer.save()
+					            return Response(serializer.data)
+					        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+					    elif request.method == 'DELETE':
+					        Welearner.delete()
+					        return Response(status=status.HTTP_204_NO_CONTENT)
+
+				The method is decorated with @api_view(['GET', 'PUT', 'DELETE']) to denote that it's an API view that can accept GET, PUT, and DELETE requests.
+
+				The check in the request.method field verifies the request method, and depending on its value calls the right logic:
+
+				If it's a GET request, Welearner data is serialized and sent using a Response object.
+
+				If it's a PUT request, the method creates a serializer for new Welearner data. Next, it calls the save() method of the created serializer object. Finally, it sends a Response object with the updated Welearner.
+
+				If it's a DELETE request, the method calls the delete() method of the Welearner object to delete it, then returns a Response object with no data.
+
+				*****The completed file looks like this:*****
+
+					~/learnreact/welearner/views.py
+					from rest_framework.response import Response
+					from rest_framework.decorators import api_view
+					from rest_framework import status
+
+					from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+					from .models import Welearner 
+					from .serializers import *
+
+
+					@api_view(['GET', 'POST'])
+					def welearner_list(request):
+					    """
+					 List  welearner, or create a new Welearner.
+					 """
+					    if request.method == 'GET':
+					        data = []
+					        nextPage = 1
+					        previousPage = 1
+					        welearner = Welearner.objects.all()
+					        page = request.GET.get('page', 1)
+					        paginator = Paginator(welearner, 5)
+					        try:
+					            data = paginator.page(page)
+					        except PageNotAnInteger:
+					            data = paginator.page(1)
+					        except EmptyPage:
+					            data = paginator.page(paginator.num_pages)
+
+					        serializer = welearnererializer(data,context={'request': request} ,many=True)
+					        if data.has_next():
+					            nextPage = data.next_page_number()
+					        if data.has_previous():
+					            previousPage = data.previous_page_number()
+
+					        return Response({'data': serializer.data , 'count': paginator.count, 'numpages' : paginator.num_pages, 'nextlink': '/api/welearner/?page=' + str(nextPage), 'prevlink': '/api/welearner/?page=' + str(previousPage)})
+
+					    elif request.method == 'POST':
+					        serializer = welearnererializer(data=request.data)
+					        if serializer.is_valid():
+					            serializer.save()
+					            return Response(serializer.data, status=status.HTTP_201_CREATED)
+					        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+					@api_view(['GET', 'PUT', 'DELETE'])
+					def welearner_detail(request, pk):
+					    """
+					 Retrieve, update or delete a Welearner by id/pk.
+					 """
+					    try:
+					        Welearner = Welearner.objects.get(pk=pk)
+					    except Welearner.DoesNotExist:
+					        return Response(status=status.HTTP_404_NOT_FOUND)
+
+					    if request.method == 'GET':
+					        serializer = welearnererializer(Welearner,context={'request': request})
+					        return Response(serializer.data)
+
+					    elif request.method == 'PUT':
+					        serializer = welearnererializer(Welearner, data=request.data,context={'request': request})
+					        if serializer.is_valid():
+					            serializer.save()
+					            return Response(serializer.data)
+					        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+					    elif request.method == 'DELETE':
+					        Welearner.delete()
+					        return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+				We can now move on to creating our endpoints.
+
+				Adding API Endpoints
+
+				We will now create the API endpoints: api/welearner/, for querying and creating welearner, and api/welearner/<pk>, for getting, updating, or deleting single welearner by their pk.
+
+					Open ~/learnreact/learnreact/urls.py:
+
+							~/learnreact/learnreact/urls.py
+
+					Leave what's there, but add the import to the welearner views at the top of the file:
+
+							~/learnreact/learnreact/urls.py
+								from django.contrib import admin
+								from django.urls import path
+								from welearner import views
+								from django.conf.urls import url
+
+				Next, add the api/welearner/ and api/welearner/<pk> URLs to the urlpatterns list that contains the application's URLs:
+
+							~/learnreact/learnreact/urls.py
+									...
+
+								urlpatterns = [
+								    path('admin/', admin.site.urls),
+								    url(r'^api/welearner/$', views.welearner_list),
+								    url(r'^api/welearner/(?P<pk>[0-9]+)$', views.welearner_detail),
+								]
+
+
+				With our REST endpoints created, let's see how we can consume them.
 
 
 
